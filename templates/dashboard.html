@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/admin.css">
+    <title>Painel do Usuário</title>
+</head>
+<body>
+    <h2>Bem-vindo, {{ usuario.nome }}</h2>
+
+    {% if usuario.tabela %}
+        <form action="{{ url_for('view_table', cnpj=usuario.cnpj) }}" method="GET">
+            <button class="visualizar">Visualizar Planilha</button>
+        </form>
+        <form action="{{ url_for('download_table', cnpj=usuario.cnpj) }}" method="GET">
+            <button class="baixar">Baixar Planilha</button>
+        </form>
+    {% else %}
+        <p>Nenhuma planilha anexada.</p>
+    {% endif %}
+
+    <form action="{{ url_for('logout') }}" method="POST">
+        <button type="submit" class="logout-button">Logout</button>
+    </form>
+</body>
+</html>

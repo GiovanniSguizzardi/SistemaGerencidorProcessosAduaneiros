@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizando CNPJ - {{ cnpj }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h2>Visualizando Planilha do CNPJ - {{ cnpj }}</h2>
+
+    <table border="1">
+        <thead>
+            <tr>
+                {% for column in headers %}
+                    <th style="background: #4CAF50; color: white; text-align: center;">{{ column }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in rows %}
+            <tr>
+                {% for cell in row %}
+                <td>{{ cell }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ url_for('admin_dashboard') }}">
+        <button style="background-color: #f44336; color: white; border: none; padding: 10px; cursor: pointer;">Voltar</button>
+    </a>
+</body>
+</html>

@@ -1,0 +1,139 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+/* Container da tabela */
+.table-container {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 80vh;
+}
+
+/* Estilizando a tabela */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    table-layout: auto;
+    word-wrap: break-word;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+    white-space: normal;
+}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+td {
+    vertical-align: middle;
+}
+
+/* Alinhamento correto dos botões e inputs */
+td form {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* Alinhamento correto dos botões na tabela */
+td .botoes {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+input[type="file"] {
+    width: 90%;
+    padding: 5px;
+    font-size: 14px;
+}
+
+/* Estilizando os botões */
+button {
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+button.visualizar {
+    background-color: #4CAF50;
+}
+
+button.visualizar:hover {
+    background-color: #3e8e41;
+}
+
+button.baixar {
+    background-color: #008CBA;
+}
+
+button.baixar:hover {
+    background-color: #007bb5;
+}
+
+button.excluir {
+    background-color: #f44336;
+}
+
+button.excluir:hover {
+    background-color: #d32f2f;
+}
+
+button.anexar {
+    background-color: #FFA500;
+}
+
+button.anexar:hover {
+    background-color: #cc8400;
+}
+
+button.adicionar {
+    background-color: #28a745;
+}
+
+button.adicionar:hover {
+    background-color: #218838;
+}
+
+/* Botão de logout */
+
+.logout-container {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+}
+
+.logout-button {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.logout-button:hover {
+    background-color: #d32f2f;
+}
