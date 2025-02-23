@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="utf-8">
+    <title>Detalhes do Processo</title>
+</head>
+<body>
+    <h2>Detalhes do Processo</h2>
+    <p><strong>Referência:</strong> {{ usuario.tabela }}</p>
+    <p><strong>Nome da Empresa:</strong> {{ usuario.nome }}</p>
+
+    <h3>Documentos Anexados</h3>
+    <ul>
+        <li><a href="{{ usuario.bl }}" target="_blank">📄 BL</a></li>
+        <li><a href="{{ usuario.invoice }}" target="_blank">📄 Invoice</a></li>
+        <li><a href="{{ usuario.packing_list }}" target="_blank">📄 Packing List</a></li>
+        <li><a href="{{ usuario.li }}" target="_blank">📄 LI</a></li>
+        <li><a href="{{ usuario.di }}" target="_blank">📄 DI</a></li>
+    </ul>
+
+    <a href="{{ url_for('dashboard') }}">Voltar</a>
+</body>
+</html>

@@ -1,35 +1,260 @@
 <!DOCTYPE html>
 <html lang="pt">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visualizando CNPJ - {{ cnpj }}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Visualizando Planilha</title>
 </head>
+
 <body>
-    <h2>Visualizando Planilha do CNPJ - {{ cnpj }}</h2>
+    <div class="container">
+        <h2>📊 Visualizando Planilha do CNPJ - {{ cnpj }}</h2>
 
-    <table border="1">
-        <thead>
-            <tr>
-                {% for column in headers %}
-                    <th style="background: #4CAF50; color: white; text-align: center;">{{ column }}</th>
-                {% endfor %}
-            </tr>
-        </thead>
-        <tbody>
-            {% for row in rows %}
-            <tr>
-                {% for cell in row %}
-                <td>{{ cell }}</td>
-                {% endfor %}
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+        <!-- Formulário de pesquisa -->
+        <form method="POST" action="{{ url_for('view_table', cnpj=cnpj) }}" class="search-form">
+            <label for="referencia">🔍 Número de Referência:</label>
+            <input type="text" name="referencia" placeholder="Exemplo: DS24770" required>
+            <button type="submit" class="search-button">Pesquisar</button>
+        </form>
 
-    <a href="{{ url_for('admin_dashboard') }}">
-        <button style="background-color: #f44336; color: white; border: none; padding: 10px; cursor: pointer;">Voltar</button>
-    </a>
+        {% if rows is not none and rows|length > 0 %}
+        <div class="table-container">
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        {% for header in headers %}
+                        <th>{{ header }}</th>
+                        {% endfor %}
+                        <th>DOCUMENTOS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in rows %}
+                    <tr>
+                        {% for cell in row %}
+                        <td>{{ cell }}</td>
+                        {% endfor %}
+                        <td>
+                            {% set ref = row[0] %}
+                            
+                            <!-- Seção de documentos -->
+                            <div class="documents-section">
+                                <h3>📂 Documentos Anexados</h3>
+
+                                {% if session['usuario'] == 'Admin' %}
+                                <!-- Admin pode anexar arquivos -->
+                                <div class="upload-container">
+                                    <form action="{{ url_for('upload_document', cnpj=cnpj) }}" method="POST" enctype="multipart/form-data">
+                                        <input type="hidden" name="referencia" value="{{ ref }}">
+                                        
+                                        <div class="file-inputs">
+                                            <input type="file" name="bl" title="BL">
+                                            <input type="file" name="invoice" title="Invoice">
+                                            <input type="file" name="packing_list" title="Packing List">
+                                            <input type="file" name="li" title="LI">
+                                            <input type="file" name="di" title="DI">
+                                            <button type="submit" class="upload-button">📎 Anexar arquivo(s)</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                {% endif %}
+
+                                <!-- Lista de documentos -->
+                                {% if arquivos.get(ref) %}
+                                    <h4>Documentos Disponíveis:</h4>
+                                    <ul class="doc-list">
+                                        {% for doc_type, exists in arquivos[ref].items() %}
+                                            {% if exists %}
+                                                <li>
+                                                    <a href="{{ url_for('download_document', cnpj=cnpj, referencia=ref, doc_type=doc_type) }}" target="_blank" class="doc-link">📥 {{ doc_type.upper() }}</a>
+                                                    
+                                                    {% if session['usuario'] == 'Admin' %}
+                                                    <!-- Admin pode excluir arquivos -->
+                                                    <form action="{{ url_for('delete_document', cnpj=cnpj, referencia=ref, doc_type=doc_type) }}" method="POST" class="delete-form">
+                                                        <button type="submit" class="delete-button" onclick="return confirm('Tem certeza que deseja excluir este documento?')">🗑️</button>
+                                                    </form>
+                                                    {% endif %}
+                                                </li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    <p class="no-docs">Nenhum documento anexado</p>
+                                {% endif %}
+                            </div>
+                        </td>                
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="no-results">⚠️ Nenhum resultado encontrado para a referência pesquisada.</p>
+        {% endif %}
+
+        <a href="{{ url_for('login') }}" class="back-button">⬅️ Voltar para o Login</a>
+    </div>
+
+    <style>
+        /* Estilos Gerais */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 95%;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #333;
+            text-align: center;
+        }
+
+        /* Formulário de pesquisa */
+        .search-form {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .search-form input {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .search-button {
+            padding: 8px 12px;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .search-button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Tabela Responsiva */
+        .table-container {
+            overflow-x: auto;
+            max-width: 100%;
+        }
+
+        .styled-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: auto;
+        }
+
+        .styled-table th, .styled-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+            font-size: 14px;
+            word-wrap: break-word;
+            white-space: nowrap;
+        }
+
+        .styled-table th {
+            background-color: #28a745;
+            color: white;
+            font-size: 16px;
+        }
+
+        .styled-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        /* Upload de Arquivos */
+        .documents-section {
+            background: #28a745;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .upload-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .file-inputs {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .upload-button {
+            background-color: #ffc107;
+            border: none;
+            padding: 5px 10px;
+            color: black;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+
+        .upload-button:hover {
+            background-color: #e0a800;
+        }
+
+        .back-button {
+            padding: 8px 12px;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        /* Lista de Documentos */
+        .doc-list {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .doc-link {
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+        }
+
+        .delete-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: red;
+        }
+
+        .delete-button:hover {
+            color: darkred;
+        }
+    </style>
 </body>
 </html>

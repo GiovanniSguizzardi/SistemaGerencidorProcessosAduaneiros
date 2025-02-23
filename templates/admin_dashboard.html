@@ -4,10 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../static/admin.css">
-    <title>Admin Dashboard</title>
+    <title>Painel do Administrador</title>
+    <style>
+        .logout-container {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        .logout-button {
+            background-color: red;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
-    <h2>Gerenciamento de Empresas</h2>
 
     <!-- Botão de Logout -->
     <div class="logout-container">
@@ -15,45 +31,56 @@
             <button type="submit" class="logout-button">Logout</button>
         </form>
     </div>
-    
+
+    <h2>Painel do Administrador</h2>
     <table>
         <thead>
             <tr>
                 <th>CNPJ</th>
                 <th>Nome</th>
-                <th>Tabela</th>
                 <th>Senha</th>
+                <th>Planilha</th>
                 <th>Ações</th>
             </tr>
         </thead>
+
+        <h3>Adicionar Nova Empresa</h3>
+        <form action="{{ url_for('add_cnpj') }}" method="POST">
+            <label for="cnpj">CNPJ:</label>
+            <input type="text" name="cnpj" required pattern="\d{14}" placeholder="Somente números">
+            <label for="nome">Nome da Empresa:</label>
+            <input type="text" name="nome" required placeholder="Nome da Empresa">
+            <button type="submit" class="adicionar">Adicionar Empresa</button>
+        </form>
+
         <tbody>
             {% for usuario in usuarios %}
             <tr>
                 <td>{{ usuario.cnpj }}</td>
                 <td>{{ usuario.nome }}</td>
                 <td>
+                    <input type="text" value="{{ usuario.senha }}" class="senha-input" readonly>
+                    <button class="copiar-senha" onclick="copiarSenha(this)">Copiar</button>
+                </td>
+                <td>
                     {% if usuario.tabela %}
                         <form action="{{ url_for('view_table', cnpj=usuario.cnpj) }}" method="GET">
-                            <button class="visualizar">Visualizar</button>
+                            <button class="visualizar">Visualizar Planilha</button>
                         </form>
                         <form action="{{ url_for('download_table', cnpj=usuario.cnpj) }}" method="GET">
-                            <button class="baixar">Baixar</button>
+                            <button class="baixar">Baixar Planilha</button>
                         </form>
                         <form action="{{ url_for('delete_table', cnpj=usuario.cnpj) }}" method="POST">
-                            <button class="excluir">Excluir</button>
+                            <button class="excluir">Excluir Planilha</button>
                         </form>
                     {% else %}
                         Nenhuma planilha anexada
                     {% endif %}
                 </td>
-                <td class="senha-container">
-                    <input type="text" value="{{ usuario.senha }}" class="senha-input" readonly>
-                    <button class="copiar-senha" onclick="copiarSenha(this)">Copiar</button>
-                </td>
                 <td>
                     <form action="{{ url_for('upload_file', cnpj=usuario.cnpj) }}" method="POST" enctype="multipart/form-data">
                         <input type="file" name="file" required>
-                        <button type="submit" class="anexar">Anexar</button>
+                        <button type="submit" class="anexar">Anexar Planilha</button>
                     </form>
                     <form action="{{ url_for('delete_cnpj', cnpj=usuario.cnpj) }}" method="POST">
                         <button class="excluir">Excluir Empresa</button>
@@ -63,16 +90,6 @@
             {% endfor %}
         </tbody>
     </table>
-
-    <!-- Formulário para adicionar nova empresa -->
-    <h3>Adicionar Nova Empresa</h3>
-    <form action="{{ url_for('add_cnpj') }}" method="POST">
-        <label for="cnpj">CNPJ:</label>
-        <input type="text" name="cnpj" required pattern="\d{14}" placeholder="Somente números">
-        <label for="nome">Nome da Empresa:</label>
-        <input type="text" name="nome" required placeholder="Nome da Empresa">
-        <button type="submit" class="adicionar">Adicionar Empresa</button>
-    </form>
 
     <script>
         function copiarSenha(botao) {

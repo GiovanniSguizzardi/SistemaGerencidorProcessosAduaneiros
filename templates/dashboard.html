@@ -5,23 +5,98 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../static/admin.css">
     <title>Painel do Usuário</title>
+    <style>
+        .logout-container {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        .logout-button {
+            background-color: red;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
+
+    <!-- Botão de Logout -->
+    <div class="logout-container">
+        <form action="{{ url_for('logout') }}" method="POST">
+            <button type="submit" class="logout-button">Logout</button>
+        </form>
+    </div>
+
     <h2>Bem-vindo, {{ usuario.nome }}</h2>
+    <h3>Suas Informações</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>CNPJ</th>
+                <th>Nome</th>
+                <th>Planilha</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ usuario.cnpj }}</td>
+                <td>{{ usuario.nome }}</td>
+                <td>
+                    {% if usuario.tabela %}
+                        <form action="{{ url_for('view_table', cnpj=usuario.cnpj) }}" method="GET">
+                            <button class="visualizar">Visualizar Planilha</button>
+                        </form>
+                        <form action="{{ url_for('download_table', cnpj=usuario.cnpj) }}" method="GET">
+                            <button class="baixar">Baixar Planilha</button>
+                        </form>
+                    {% else %}
+                        Nenhuma planilha anexada
+                    {% endif %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
 
-    {% if usuario.tabela %}
-        <form action="{{ url_for('view_table', cnpj=usuario.cnpj) }}" method="GET">
-            <button class="visualizar">Visualizar Planilha</button>
-        </form>
-        <form action="{{ url_for('download_table', cnpj=usuario.cnpj) }}" method="GET">
-            <button class="baixar">Baixar Planilha</button>
-        </form>
-    {% else %}
-        <p>Nenhuma planilha anexada.</p>
-    {% endif %}
+    <h3>Seus Documentos Anexados</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Referência</th>
+                <th>Documentos</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for referencia, docs in arquivos.items() %}
+                {% if docs['bl'] or docs['invoice'] or docs['packing_list'] or docs['li'] or docs['di'] %}
+                <tr>
+                    <td>{{ referencia }}</td>
+                    <td>
+                        {% if docs["bl"] %}
+                            <a href="{{ url_for('download_document', cnpj=usuario.cnpj, referencia=referencia, doc_type='bl') }}" target="_blank">📄 BL</a> |
+                        {% endif %}
+                        {% if docs["invoice"] %}
+                            <a href="{{ url_for('download_document', cnpj=usuario.cnpj, referencia=referencia, doc_type='invoice') }}" target="_blank">📄 Invoice</a> |
+                        {% endif %}
+                        {% if docs["packing_list"] %}
+                            <a href="{{ url_for('download_document', cnpj=usuario.cnpj, referencia=referencia, doc_type='packing_list') }}" target="_blank">📄 Packing List</a> |
+                        {% endif %}
+                        {% if docs["li"] %}
+                            <a href="{{ url_for('download_document', cnpj=usuario.cnpj, referencia=referencia, doc_type='li') }}" target="_blank">📄 LI</a> |
+                        {% endif %}
+                        {% if docs["di"] %}
+                            <a href="{{ url_for('download_document', cnpj=usuario.cnpj, referencia=referencia, doc_type='di') }}" target="_blank">📄 DI</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
 
-    <form action="{{ url_for('logout') }}" method="POST">
-        <button type="submit" class="logout-button">Logout</button>
-    </form>
 </body>
 </html>

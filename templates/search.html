@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Pesquisar Processo</title>
+</head>
+<body>
+    <h2>Buscar Processo</h2>
+    <form method="POST" action="{{ url_for('search') }}">
+        <label for="referencia">Número de Referência:</label>
+        <input type="text" name="referencia" required>
+        <button type="submit">Pesquisar</button>
+    </form>
+</body>
+</html>
