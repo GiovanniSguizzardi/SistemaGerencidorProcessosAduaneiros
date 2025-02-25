@@ -101,4 +101,7 @@ Contribuições são sempre bem-vindas! Siga os passos abaixo para colaborar:
 ---
 
 ## **📜 Licença**
-Este projeto está licenciado sob a **MIT License** – sinta-se livre para usá-lo e modificá-lo. 📝
+Este projeto é propriedade exclusiva do autor e não pode ser modificado, distribuído ou utilizado para fins comerciais sem permissão explícita.
+Todos os direitos são reservados. Para solicitar permissões, entre em contato com giovanni.sguiconde@gmail.com
+
+📌 Licença: All Rights Reserved © 2025 Giovanni Sguizzardi Conde
