@@ -1,3 +1,7 @@
+> [!NOTE]
+> Ao baixar o projeto, se não existente, criar um pasta chamada "uploads"
+>
+
 # **📌 Sistema de Gerenciamento de Processos Aduaneiros**
 
 Um sistema web desenvolvido em **Flask** para gerenciar processos de importação/exportação, permitindo o upload, consulta e gerenciamento de planilhas e documentos anexados por CNPJ.
